@@ -102,46 +102,48 @@ func executeHandler(event *corev2.Event) error {
 
 	var timeSeriesList promremote.TSList
 
-	for _, point := range event.Metrics.Points {
-		var labels []promremote.Label
-		var metricName string
-		splittedMetricName := strings.Split(point.Name, ".")
-		if strings.Join(splittedMetricName[1:], ".") == "value" {
-			metricName = splittedMetricName[0]
-		} else {
-			metricName = strings.Join(splittedMetricName, "_")
-		}
-		labels = append(labels, promremote.Label{
-			Name:  "__name__",
-			Value: metricName,
-		})
-		labels = append(labels, promremote.Label{
-			Name:  "sensu_entity_name",
-			Value: event.Entity.Name,
-		})
-		if plugin.IncludeCheckName && event.HasCheck() {
+	if event.HasMetrics() {
+		for _, point := range event.Metrics.Points {
+			var labels []promremote.Label
+			var metricName string
+			splittedMetricName := strings.Split(point.Name, ".")
+			if strings.Join(splittedMetricName[1:], ".") == "value" {
+				metricName = splittedMetricName[0]
+			} else {
+				metricName = strings.Join(splittedMetricName, "_")
+			}
 			labels = append(labels, promremote.Label{
-				Name: "sensu_check_name",
-				Value: event.Check.Name,
+				Name:  "__name__",
+				Value: metricName,
+			})
+			labels = append(labels, promremote.Label{
+				Name:  "sensu_entity_name",
+				Value: event.Entity.Name,
+			})
+			if plugin.IncludeCheckName && event.HasCheck() {
+				labels = append(labels, promremote.Label{
+					Name:  "sensu_check_name",
+					Value: event.Check.Name,
+				})
+			}
+			for _, tag := range point.Tags {
+				labels = append(labels, promremote.Label{
+					Name:  tag.Name,
+					Value: tag.Value,
+				})
+			}
+			timestamp, err := convertInt64ToTime(point.Timestamp)
+			if err != nil {
+				return err
+			}
+			timeSeriesList = append(timeSeriesList, promremote.TimeSeries{
+				Labels: labels,
+				Datapoint: promremote.Datapoint{
+					Timestamp: timestamp,
+					Value:     point.Value,
+				},
 			})
 		}
-		for _, tag := range point.Tags {
-			labels = append(labels, promremote.Label{
-				Name:  tag.Name,
-				Value: tag.Value,
-			})
-		}
-		timestamp, err := convertInt64ToTime(point.Timestamp)
-		if err != nil {
-			return err
-		}
-		timeSeriesList = append(timeSeriesList, promremote.TimeSeries{
-			Labels: labels,
-			Datapoint: promremote.Datapoint{
-				Timestamp: timestamp,
-				Value:     point.Value,
-			},
-		})
 	}
 
 	if plugin.IncludeEventStatus && event.HasCheck() {
