@@ -1,7 +1,6 @@
 [![Sensu Bonsai Asset](https://img.shields.io/badge/Bonsai-Download%20Me-brightgreen.svg?colorB=89C967&logo=sensu)](https://bonsai.sensu.io/assets/jadiunr/sensu-prometheus-remote-write-handler)
 ![goreleaser](https://github.com/jadiunr/sensu-prometheus-remote-write-handler/workflows/goreleaser/badge.svg)
 [![Go Test](https://github.com/jadiunr/sensu-prometheus-remote-write-handler/workflows/Go%20Test/badge.svg)](https://github.com/jadiunr/sensu-prometheus-remote-write-handler/actions?query=workflow%3A%22Go+Test%22)
-[![goreleaser](https://github.com/jadiunr/sensu-prometheus-remote-write-handler/workflows/goreleaser/badge.svg)](https://github.com/jadiunr/sensu-prometheus-remote-write-handler/actions?query=workflow%3Agoreleaser)
 
 # Sensu Prometheus remote write Handler
 
@@ -55,10 +54,10 @@ consider doing so! If you're using sensuctl 5.13 with Sensu Backend 5.13 or late
 following command to add the asset:
 
 ```
-sensuctl asset add jadiunr/sensu-prometheus-remote-write-handler
+sensuctl asset add adelie-git/sensu-prometheus-remote-write-handler
 ```
 
-If you're using an earlier version of sensuctl, you can find the asset on the [Bonsai Asset Index](https://bonsai.sensu.io/assets/jadiunr/sensu-prometheus-remote-write-handler).
+If you're using an earlier version of sensuctl, you can find the asset on the [Bonsai Asset Index](https://bonsai.sensu.io/assets/adelie-git/sensu-prometheus-remote-write-handler).
 
 ### Handler definition
 
@@ -73,7 +72,7 @@ spec:
   command: sensu-prometheus-remote-write-handler -e http://localhost:9009/prometheus -H "X-Scope-OrgID:tenant-example"
   type: pipe
   runtime_assets:
-  - jadiunr/sensu-prometheus-remote-write-handler
+  - adelie-git/sensu-prometheus-remote-write-handler
 ```
 
 ## Installation from source
