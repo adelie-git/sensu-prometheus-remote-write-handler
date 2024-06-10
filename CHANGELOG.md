@@ -7,7 +7,12 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-## [1.2.0] - 2024-06-7
+## [1.3.0] - 2024-06-10
+
+### Changed
+- Replace invalid character
+
+## [1.2.0] - 2024-06-07
 
 ### Changed
 - Check event metrics

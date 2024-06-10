@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -106,12 +107,14 @@ func executeHandler(event *corev2.Event) error {
 		for _, point := range event.Metrics.Points {
 			var labels []promremote.Label
 			var metricName string
+			reg := regexp.MustCompile("[^a-zA-Z0-9_:]")
 			splittedMetricName := strings.Split(point.Name, ".")
 			if strings.Join(splittedMetricName[1:], ".") == "value" {
 				metricName = splittedMetricName[0]
 			} else {
 				metricName = strings.Join(splittedMetricName, "_")
 			}
+			metricName = reg.ReplaceAllString(metricName, "_")
 			labels = append(labels, promremote.Label{
 				Name:  "__name__",
 				Value: metricName,
